@@ -1,10 +1,10 @@
 # NOTICE / 第三方声明
 
-本文件列出 ml-sgh-plugin 使用到的第三方项目与素材归属。本仓库采用 MIT 协议，见 [LICENSE](LICENSE)。
+本文件列出 ml-groupHold-plugin 使用到的第三方项目与素材归属。本仓库采用 MIT 协议，见 [LICENSE](LICENSE)。
 
 ## 本仓库不含第三方素材
 
-ml-sgh-plugin **不附带任何角色数据、立绘、图标、字体或其他游戏素材的二进制文件**。所有素材在运行时从使用者本机已安装的 `plugins/miao-plugin/resources/` 读取；本仓库不提供下载渠道、镜像、token 或绕过方式。
+ml-groupHold-plugin **不附带任何角色数据、立绘、图标、字体或其他游戏素材的二进制文件**。所有素材在运行时从使用者本机已安装的 `plugins/miao-plugin/resources/` 读取；本仓库不提供下载渠道、镜像、token 或绕过方式。
 
 ## miao-plugin
 
@@ -49,4 +49,4 @@ SOFTWARE.
 
 ## 署名
 
-出图页脚保留 `Design by Mi1in` 与插件版本信息，插件名为 `ml-sgh-plugin`。
+出图页脚保留 `Design by Mi1in` 与插件版本信息，插件名为 `ml-groupHold-plugin`。

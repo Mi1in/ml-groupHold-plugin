@@ -138,7 +138,7 @@ async function scanGroup(e, game = "gs", targetName = "") {
     try {
       player = Player.create(binding.uid, game)
     } catch (err) {
-      logger?.warn?.(`[ml-sgh-plugin] 读取 ${game} uid ${binding.uid} 数据失败：${err?.message || err}`)
+      logger?.warn?.(`[ml-groupHold-plugin] 读取 ${game} uid ${binding.uid} 数据失败：${err?.message || err}`)
       continue
     }
     if (!player || typeof player.forEachAvatar !== "function") continue
@@ -174,7 +174,7 @@ async function scanGroup(e, game = "gs", targetName = "") {
         stat.owners.push(withDetail ? richOwner(av, binding, game) : leanOwner(av, binding))
       })
     } catch (err) {
-      logger?.warn?.(`[ml-sgh-plugin] 解析 ${game} uid ${binding.uid} 角色数据出错：${err?.message || err}`)
+      logger?.warn?.(`[ml-groupHold-plugin] 解析 ${game} uid ${binding.uid} 角色数据出错：${err?.message || err}`)
     }
 
     if (hasData) result.players.push({ qq: binding.qq, nick: binding.nick, uid: binding.uid })

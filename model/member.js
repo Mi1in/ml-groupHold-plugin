@@ -15,7 +15,7 @@ async function getGroupMembers(e) {
       if (map.size) return map
     }
   } catch (err) {
-    logger?.warn?.(`[ml-sgh-plugin] getMemberMap 失败：${err?.message || err}`)
+    logger?.warn?.(`[ml-groupHold-plugin] getMemberMap 失败：${err?.message || err}`)
   }
   try {
     const list = (await group.getMemberList?.()) || []
@@ -24,7 +24,7 @@ async function getGroupMembers(e) {
       if (qq) map.set(String(qq), m)
     }
   } catch (err) {
-    logger?.warn?.(`[ml-sgh-plugin] getMemberList 失败：${err?.message || err}`)
+    logger?.warn?.(`[ml-groupHold-plugin] getMemberList 失败：${err?.message || err}`)
   }
   return map
 }
@@ -92,7 +92,7 @@ export async function getMemberBindings(e, game = "gs") {
       if (info?.qq) add(info.qq, uid, info.uidType, info.totalCount)
     })
   } catch (err) {
-    logger?.warn?.(`[ml-sgh-plugin] 读取 miao 绑定信息失败：${err?.message || err}`)
+    logger?.warn?.(`[ml-groupHold-plugin] 读取 miao 绑定信息失败：${err?.message || err}`)
   }
 
   const boundQQ = new Set(candidates.map((c) => c.qq))

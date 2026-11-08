@@ -1,4 +1,4 @@
-# ml-sgh-plugin
+# ml-groupHold-plugin
 
 云崽（Yunzai-Bot）插件：统计**本群成员**的角色持有率，支持原神与崩坏：星穹铁道。
 
@@ -25,11 +25,13 @@
 
 ## 安装
 
+仓库：https://github.com/Mi1in/ml-groupHold-plugin
+
 前置：Yunzai-Bot V2 / V3、[miao-plugin](https://github.com/yoimiya-kokomi/miao-plugin)、puppeteer 渲染器。
 
 ```bash
 cd <云崽目录>/plugins
-git clone https://github.com/Mi1in/ml-sgh-plugin.git ml-sgh-plugin
+git clone https://github.com/Mi1in/ml-groupHold-plugin.git ml-groupHold-plugin
 ```
 
 重启云崽即可。角色数据、立绘、图标与字体均由本机已安装的 miao-plugin 提供，**装好 miao-plugin 即可使用，无需额外下载资源包**；本插件不附带、不内置、不镜像任何角色数据或游戏素材。

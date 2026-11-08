@@ -1,10 +1,18 @@
 {
-  "name": "ml-sgh-plugin",
+  "name": "ml-groupHold-plugin",
   "version": "1.0.0",
-  "description": "群成员角色持有率统计（武器/圣遗物/命座）",
+  "description": "云崽插件：群成员角色持有率统计（原神 / 星穹铁道），含等级、命座 / 星魂、武器 / 光锥、圣遗物 / 遗器分布",
   "type": "module",
   "main": "index.js",
   "author": "Mi1in",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mi1in/ml-groupHold-plugin.git"
+  },
+  "homepage": "https://github.com/Mi1in/ml-groupHold-plugin#readme",
+  "bugs": {
+    "url": "https://github.com/Mi1in/ml-groupHold-plugin/issues"
+  },
   "dependencies": {}
 }

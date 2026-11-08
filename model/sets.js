@@ -16,7 +16,7 @@ export function setMeta(game = "gs") {
       map.set(v.name, { id: String(v.id || ""), skill2: String(v?.skills?.["2"] || "") })
     }
   } catch (err) {
-    logger?.warn?.(`[ml-sgh-plugin] 读取 ${game} 套装表失败：${err?.message || err}`)
+    logger?.warn?.(`[ml-groupHold-plugin] 读取 ${game} 套装表失败：${err?.message || err}`)
   }
   metaCache.set(game, map)
   return map

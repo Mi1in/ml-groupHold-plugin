@@ -49,7 +49,7 @@ function metaNameIndex(game) {
       map.set(normName(v.name), v.name)
     }
   } catch (err) {
-    logger?.warn?.(`[ml-sgh-plugin] 读取 ${game} 角色表失败：${err?.message || err}`)
+    logger?.warn?.(`[ml-groupHold-plugin] 读取 ${game} 角色表失败：${err?.message || err}`)
   }
   nameIndexCache.set(game, map)
   return map
@@ -77,7 +77,7 @@ export function parseCommand(msg = "") {
 export default class holdRate extends plugin {
   constructor() {
     super({
-      name: "ml-sgh-plugin:群成员角色持有率",
+      name: "ml-groupHold-plugin:群成员角色持有率",
       dsc: "统计本群成员的角色 / 命座 / 武器 / 圣遗物持有情况（原神 # / 星铁 *），支持 #群二命角色持有率 按指定命座排名",
       event: "message",
       priority: -1000000,
@@ -107,7 +107,7 @@ export default class holdRate extends plugin {
     try {
       scan = await collectGroup(e, game)
     } catch (err) {
-      logger.error(`[ml-sgh-plugin] 群持有率统计失败：${err?.stack || err}`)
+      logger.error(`[ml-groupHold-plugin] 群持有率统计失败：${err?.stack || err}`)
       return e.reply("统计数据读取失败，请稍后再试~")
     }
 
@@ -118,7 +118,7 @@ export default class holdRate extends plugin {
     try {
       data = buildOverview(scan, { game, star, focusCons, ...this.groupInfo(e), credit: credit() })
     } catch (err) {
-      logger.error(`[ml-sgh-plugin] 持有率聚合失败：${err?.stack || err}`)
+      logger.error(`[ml-groupHold-plugin] 持有率聚合失败：${err?.stack || err}`)
       return e.reply("统计数据整理失败，请稍后再试~")
     }
 
@@ -144,7 +144,7 @@ export default class holdRate extends plugin {
     try {
       scan = await collectChar(e, game, char.name)
     } catch (err) {
-      logger.error(`[ml-sgh-plugin] 角色持有率统计失败：${err?.stack || err}`)
+      logger.error(`[ml-groupHold-plugin] 角色持有率统计失败：${err?.stack || err}`)
       return e.reply("统计数据读取失败，请稍后再试~")
     }
 
@@ -197,7 +197,7 @@ export default class holdRate extends plugin {
     try {
       data = buildDetail(scan, meta)
     } catch (err) {
-      logger.error(`[ml-sgh-plugin] 角色详情聚合失败：${err?.stack || err}`)
+      logger.error(`[ml-groupHold-plugin] 角色详情聚合失败：${err?.stack || err}`)
       return e.reply("统计数据整理失败，请稍后再试~")
     }
 

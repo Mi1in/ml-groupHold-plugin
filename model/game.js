@@ -281,7 +281,7 @@ export function artAnchorOf(img = "", game = "gs", charName = "") {
   const name = charName || srNameOf(img)
   if (name && !anchorWarned.has(name)) {
     anchorWarned.add(name)
-    globalThis.logger?.debug?.(`[ml-sgh-plugin] 星铁角色「${name}」未标定头图锚点，暂用默认值 ${fallback}；` +
+    globalThis.logger?.debug?.(`[ml-groupHold-plugin] 星铁角色「${name}」未标定头图锚点，暂用默认值 ${fallback}；` +
       `可在 resources/sr-face.json 里补一条 "角色名": 锚点值`)
   }
   return fallback

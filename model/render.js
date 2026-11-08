@@ -1,4 +1,4 @@
-import { PLUGIN_NAME, miaoResDir, selfResDir, toFileUrl } from "./miao.js"
+import { PLUGIN_DIR, miaoResDir, selfResDir, toFileUrl } from "./miao.js"
 
 export async function renderTpl(e, tpl, data = {}) {
   if (!e?.runtime?.render) {
@@ -9,7 +9,7 @@ export async function renderTpl(e, tpl, data = {}) {
   const selfRes = `${toFileUrl(selfResDir())}/`
   const payload = { ...data, miaoRes, selfRes }
 
-  return e.runtime.render(PLUGIN_NAME, tpl, { ...payload, quality: 96 }, {
+  return e.runtime.render(PLUGIN_DIR, tpl, { ...payload, quality: 96 }, {
     retType: "default",
     beforeRender({ data: d }) {
       return { ...d, miaoRes, selfRes }

@@ -1,12 +1,15 @@
 import path from "node:path"
-import { pathToFileURL } from "node:url"
+import { pathToFileURL, fileURLToPath } from "node:url"
 
-export const PLUGIN_NAME = "ml-sgh-plugin"
+export const PLUGIN_NAME = "ml-groupHold-plugin"
+
+const SELF_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
+export const PLUGIN_DIR = path.basename(SELF_DIR)
 
 export const botRoot = () => process.cwd()
 export const miaoDir = () => path.join(botRoot(), "plugins", "miao-plugin")
 export const miaoResDir = () => path.join(miaoDir(), "resources")
-export const selfResDir = () => path.join(botRoot(), "plugins", PLUGIN_NAME, "resources")
+export const selfResDir = () => path.join(SELF_DIR, "resources")
 
 export function toFileUrl(p = "") {
   let s = String(p).replace(/\\/g, "/")
@@ -38,7 +41,7 @@ export async function hasMiao() {
     await loadMiao()
     return true
   } catch (err) {
-    globalThis.logger?.error?.(`[ml-sgh-plugin] 加载 miao-plugin 模型失败：${err?.stack || err}`)
+    globalThis.logger?.error?.(`[ml-groupHold-plugin] 加载 miao-plugin 模型失败：${err?.stack || err}`)
     return false
   }
 }
