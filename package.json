@@ -1,6 +1,6 @@
 {
   "name": "ml-groupHold-plugin",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "云崽插件：群成员角色持有率统计（原神 / 星穹铁道），含等级、命座 / 星魂、武器 / 光锥、圣遗物 / 遗器分布",
   "type": "module",
   "main": "index.js",

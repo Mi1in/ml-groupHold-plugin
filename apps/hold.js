@@ -6,6 +6,8 @@ import { buildOverview, buildDetail } from "../model/stat.js"
 import { renderTpl } from "../model/render.js"
 import { maskId } from "../model/format.js"
 import { credit } from "../model/credit.js"
+import { helpData } from "../model/help.js"
+import { updatePlugin, updateReply } from "../model/update.js"
 import { gameConf, normName, pickBanner, parsePrefix, consNum, TRAVELER_ELEMS, artAnchorOf, artZoomOf, heroIcons } from "../model/game.js"
 
 const TIP_NO_MIAO = "本插件依赖 miao-plugin 的角色数据，请先安装/启用 miao-plugin 后再试~"
@@ -31,6 +33,9 @@ const CMD_CHAR = new RegExp(
 )
 
 const STAR_MAP = { 全部角色: 0, 全部: 0, 五星: 5, "5星": 5, 五: 5, 四星: 4, "4星": 4, 四: 4 }
+
+const CMD_HELP = /^[#*]\s*(?:群\s*)?持有率(?:插件)?帮助\s*$/
+const CMD_UPDATE = /^[#*]\s*(?:群\s*)?持有率(?:插件)?更新\s*$/
 
 const DEFAULT_STAR = 5
 
@@ -82,6 +87,8 @@ export default class holdRate extends plugin {
       event: "message",
       priority: -1000000,
       rule: [
+        { reg: CMD_HELP, fnc: "holdHelp" },
+        { reg: CMD_UPDATE, fnc: "holdUpdate" },
         { reg: CMD_OVERVIEW, fnc: "holdOverview" },
         { reg: CMD_CHAR, fnc: "holdChar" }
       ]
@@ -92,6 +99,19 @@ export default class holdRate extends plugin {
     const name = String(e?.group_name || e?.group?.name || e?.group?.group_name || "").trim()
     const id = e?.group_id || e?.group?.group_id || e?.group?.gid || ""
     return { groupName: name, groupNoMask: maskId(id) }
+  }
+
+  async holdHelp(e) {
+    const data = helpData()
+    data.credit = credit()
+    return renderTpl(e, "hold-help", data)
+  }
+
+  async holdUpdate(e) {
+    if (!e.isMaster) return e.reply("插件更新需要机器人主人权限~")
+    const dir = path.resolve(selfResDir(), "..")
+    const result = await updatePlugin(dir)
+    return e.reply(updateReply(result))
   }
 
   async holdOverview(e) {

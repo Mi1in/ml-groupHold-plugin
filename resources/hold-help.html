@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <title>{{title}} · 帮助</title>
+  <link rel="stylesheet" href="{{selfRes}}hold-help.css">
+  <style>
+    @font-face { font-family: "mlnum"; src: url("{{miaoRes}}common/font/tttgbnumber.woff") format("woff"); }
+    @font-face { font-family: "mlhei"; src: url("{{miaoRes}}common/font/HYWH-65W.woff") format("woff"); }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-tag">{{@credit.name}}</div>
+    <div class="hero-title">{{title}}</div>
+    <div class="hero-sub">{{slogan}}</div>
+    <div class="hero-line"></div>
+  </div>
+
+  <div class="notice">
+    <div class="notice-head">{{scope.head}}</div>
+    <div class="notice-main">{{scope.main}}</div>
+    <div class="notice-hint">{{scope.hint}} <code class="hl">{{scope.cmd}}</code> {{scope.tail}}</div>
+  </div>
+
+  <div class="section">
+    <div class="sec-head"><i class="bar"></i><span>它能做什么</span></div>
+    <div class="feat-list">
+      {{each features f}}
+      <div class="feat">
+        <span class="feat-no num">{{f.no}}</span>
+        <div class="feat-body">
+          <div class="feat-name">{{f.name}}</div>
+          <div class="feat-desc">{{f.desc}}</div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-head"><i class="bar"></i><span>指令一览</span></div>
+    {{each groups g}}
+    <div class="cmd-group">
+      <div class="cg-head">
+        <span class="cg-name">{{g.name}}</span>
+        {{if g.note}}<span class="cg-note">{{g.note}}</span>{{/if}}
+      </div>
+      {{each g.cmds c}}
+      <div class="cmd-row">
+        <code class="cmd">{{c.cmd}}</code>
+        <span class="cmd-desc">{{c.desc}}</span>
+      </div>
+      {{/each}}
+    </div>
+    {{/each}}
+  </div>
+
+  <div class="section">
+    <div class="sec-head"><i class="bar"></i><span>小贴士</span></div>
+    <div class="tip-list">
+      {{each tips t}}
+      <div class="tip">
+        <code class="tip-code">{{t.code}}</code>
+        <span class="tip-text">{{t.text}}</span>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+
+  <div class="thanks">{{thanks}}</div>
+
+  <div class="copyright">
+    <div class="cp-line">
+      <i class="cp-mark"></i>
+      <span>本图由 <b>{{@credit.name}}</b> <em>v{{credit.version}}</em> 生成 Design by <b>{{credit.author}}</b></span>
+      <i class="cp-sep"></i>
+      <span>角色数据来自 miao-plugin</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
