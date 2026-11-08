@@ -1,9 +1,7 @@
-/* 角色持有率 · 总览 */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   width: 860px;
-  /* 高清输出：CSS zoom 让整页按 1.5 倍栅格化（860 -> 1290px），小字号更清晰 */
   zoom: 1.5;
   background: #efe9dd;
   font-family: "mlhei", "Microsoft YaHei", "PingFang SC", sans-serif;
@@ -18,7 +16,6 @@ body {
   padding-bottom: 18px;
 }
 
-/* ---------- 头部 ---------- */
 .head {
   display: flex;
   align-items: flex-end;
@@ -58,7 +55,6 @@ body {
   color: #918878;
 }
 .sub .dot { width: 3px; height: 3px; border-radius: 50%; background: #cfc4ad; display: inline-block; }
-/* 排序依据徽章（按二命持有率排序） */
 .sub .ftag {
   font-size: 10.5px;
   color: #fff;
@@ -68,7 +64,6 @@ body {
   line-height: 1.55;
   letter-spacing: .3px;
 }
-/* 游戏标签（原神 / 星穹铁道） */
 .sub .gtag {
   font-size: 11px;
   color: #a9711f;
@@ -82,7 +77,6 @@ body {
 
 .head-right { display: flex; flex-direction: column; align-items: flex-end; gap: 9px; }
 
-/* 群名片 */
 .gcard {
   display: inline-flex;
   align-items: center;
@@ -133,7 +127,6 @@ body {
   background: linear-gradient(135deg, #d5a648, #b9862f);
   box-shadow: 0 3px 8px rgba(185, 134, 47, .28);
 }
-/* 排序命座标签：与范围标签区分，用描边金而不是实心 */
 .chip.focus {
   font-family: "mlnum", "mlhei", sans-serif;
   color: #a9711f;
@@ -142,7 +135,6 @@ body {
   padding: 4px 9px;
 }
 
-/* ---------- 说明 ---------- */
 .legend {
   display: flex;
   align-items: center;
@@ -158,7 +150,6 @@ body {
   border-radius: 4px;
   padding: 1px 6px;
 }
-/* 右侧：数据范围提示 */
 .legend .scope-tip {
   margin-left: auto;
   font-size: 10px;
@@ -170,7 +161,6 @@ body {
   white-space: nowrap;
 }
 
-/* ---------- 角色列表 ---------- */
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -255,7 +245,6 @@ body {
 .right { text-align: right; min-width: 60px; }
 .rate { font-size: 16.5px; color: #a9711f; line-height: 1.1; }
 .cnt { font-size: 9.5px; color: #a1967f; margin-top: 1px; }
-/* 焦点命座标签（二命 / 二魂），贴在右上角数字上方 */
 .rtag {
   display: inline-block;
   font-size: 8.5px;
@@ -267,7 +256,6 @@ body {
   letter-spacing: .3px;
 }
 
-/* 命座小格 C0~C6 */
 .cons7 { display: flex; gap: 3px; margin-top: 6px; }
 .c7 {
   position: relative;
@@ -297,7 +285,6 @@ body {
 .c7 .cbar7 i { display: block; height: 100%; border-radius: 2px; }
 .c7.zero { background: #f9f5ec; }
 .c7.zero .cv { color: #c8beab; }
-/* 当前排序依据的那一格：加金边，扫一眼就知道在排什么 */
 .c7.on {
   background: #fdf3df;
   box-shadow: inset 0 0 0 1px #d9b26a;
@@ -315,7 +302,6 @@ body {
   border-radius: 12px;
 }
 
-/* ---------- 署名 ---------- */
 .copyright { margin: 16px 26px 0; padding-top: 11px; border-top: 1px solid #f1e9da; }
 .cp-line {
   display: flex;

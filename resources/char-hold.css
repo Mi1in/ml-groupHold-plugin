@@ -1,10 +1,7 @@
-/* 角色持有率 · 单角色详情 */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   width: 600px;
-  /* 高清输出：CSS zoom 让整页按 1.5 倍栅格化（600 -> 900px），
-     小字号不再是 10px 级别的低分辨率位图；框架侧无需 deviceScaleFactor */
   zoom: 1.5;
   background: #efe9dd;
   font-family: "mlhei", "Microsoft YaHei", "PingFang SC", sans-serif;
@@ -18,8 +15,6 @@ body {
   padding-bottom: 18px;
 }
 
-/* ---------- 头图 ---------- */
-/* 头图 900x226：立绘按 translateY(-x%) 定位（锚点把「头部」对齐中线），由 .hero-bg 裁出这一条 */
 .hero {
   position: relative;
   height: 226px;
@@ -37,7 +32,7 @@ body {
   left: 50%;
   top: 50%;
   display: block;
-  width: 100%;          /* 模板内联样式会按角色覆盖（人物小的立绘要放大） */
+  width: 100%;
   max-width: none;
 }
 .hero-mask {
@@ -58,7 +53,6 @@ body {
   padding: 26px 30px 16px;
 }
 
-/* 群名片（右上角） */
 .hero-group {
   position: absolute;
   top: 16px;
@@ -129,7 +123,6 @@ body {
   object-fit: contain;
   filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .5));
 }
-/* 图标缺失时的文字标签 */
 .l1 .txt-tag {
   flex: 0 0 auto;
   white-space: nowrap;
@@ -144,7 +137,6 @@ body {
 }
 .l1 .txt-tag.dim { background: rgba(255, 255, 255, .10); border-color: rgba(255, 255, 255, .22); }
 .l1 .stars { flex: 0 0 auto; white-space: nowrap; font-size: 11px; color: #f0c877; letter-spacing: 0; }
-/* 游戏标签（原神 / 星穹铁道） */
 .meta .gtag {
   font-size: 10.5px;
   color: #f0dcb4;
@@ -189,7 +181,6 @@ body {
 .hero-stat .cap { font-size: 12px; color: rgba(255, 255, 255, .68); margin-top: 2px; letter-spacing: 2px; }
 .hero-stat .small { font-size: 11.5px; color: rgba(255, 255, 255, .55); margin-top: 8px; }
 
-/* ---------- 板块（等级分布 / 命座信息及分布 / 武器 / 圣遗物，全部竖排全宽） ---------- */
 .panels {
   display: grid;
   grid-template-columns: 1fr;
@@ -225,7 +216,6 @@ body {
   color: #b3a68e;
   letter-spacing: .5px;
 }
-/* 平均命座 / 满命人数：收在「命座分布」标题右侧的小徽章里 */
 .panel-title .pt-side { margin-left: auto; display: inline-flex; align-items: center; gap: 5px; }
 .panel-title .pt-avg {
   display: inline-flex;
@@ -242,7 +232,6 @@ body {
 }
 .panel-title .pt-avg b { color: #b4762a; font-size: 11px; }
 .panel-title .pt-avg em { font-style: normal; color: #b09a74; font-size: 9.5px; }
-/* 星铁遗器：外圈 / 内圈分组小标题 */
 .set-group {
   font-size: 10.5px;
   color: #a99a80;
@@ -262,7 +251,6 @@ body {
 }
 .panel-empty { font-size: 12px; color: #b0a693; padding: 10px 4px; }
 
-/* 命座信息及分布：前 5/9 放编号+名称，后 4/9 放比例条+数值 */
 .cm-list { display: flex; flex-direction: column; gap: 7px; }
 .cm-head { display: flex; align-items: center; gap: 8px; }
 .cm-label {
@@ -306,7 +294,6 @@ body {
 .cval em { font-style: normal; color: #a1967f; margin-left: 5px; font-size: 10.5px; }
 .cval em.dim { margin-left: 0; color: #c6bcaa; }
 
-/* 武器 / 套装 */
 .w-list { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 9px; }
 .w-row { display: flex; align-items: center; gap: 8px; }
 .w-icon {
@@ -343,7 +330,6 @@ body {
 .w-bar i { display: block; height: 100%; background: linear-gradient(90deg, #e9cd93, #c9932f); }
 .w-cnt { flex: 0 0 44px; text-align: right; font-size: 11.5px; color: #8d8271; }
 
-/* 等级分布（原神） */
 .lv-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .lv-col { min-width: 0; }
 .lv-name {
@@ -361,7 +347,6 @@ body {
 .lv-val em { font-style: normal; font-size: 10px; color: #a1967f; margin-left: 2px; }
 .lv-val span { font-size: 11px; color: #b4762a; margin-left: 8px; }
 
-/* 七元素分布（旅行者） */
 .elem-stack {
   display: flex;
   height: 10px;
@@ -397,7 +382,6 @@ body {
 .eg-cell.zero .eg-val { color: #c8beab; }
 .eg-cell.zero .eg-val span { color: #c8beab; }
 
-/* ---------- 署名 ---------- */
 .copyright { margin: 14px 26px 0; padding-top: 11px; border-top: 1px solid #f1e9da; }
 .cp-line {
   display: flex;

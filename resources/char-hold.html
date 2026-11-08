@@ -12,7 +12,7 @@
 <body>
 <div class="container" id="container">
 
-  <!-- 头图 -->
+  
   <div class="hero hero-{{game}}">
     <div class="hero-bg">
       {{if hero.banner}}<img class="hero-art" src="{{@miaoRes}}{{@hero.banner}}" style="width:{{hero.artZoom * 100}}%;transform:translate(-50%,-{{hero.artAnchor}}%)" alt="">{{/if}}
@@ -56,7 +56,7 @@
     </div>
   </div>
 
-  <!-- 一、等级分布：只有原神有，放在最上面（星铁满级固定 80，不做统计） -->
+  
   {{if hasLevels}}
   <div class="panels level">
     <div class="panel">
@@ -74,7 +74,7 @@
   </div>
   {{/if}}
 
-  <!-- 七元素分布：只有旅行者有（空 / 荧 可共鸣七种元素） -->
+  
   {{if isTraveler}}
   <div class="panels level{{if hasLevels}} tight{{/if}}">
     <div class="panel">
@@ -98,7 +98,7 @@
   </div>
   {{/if}}
 
-  <!-- 二、命座信息及分布 -->
+  
   <div class="panels{{if hasLevels || isTraveler}} second{{/if}}">
     <div class="panel">
       <div class="panel-title">
@@ -129,7 +129,7 @@
     </div>
   </div>
 
-  <!-- 三、武器 / 圣遗物 -->
+  
   <div class="panels second">
     <div class="panel">
       <div class="panel-title">{{weaponLabel}}穿戴{{if weapons.length}} TOP{{weapons.length}}{{/if}}</div>

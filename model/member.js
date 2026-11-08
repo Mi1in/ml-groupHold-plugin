@@ -1,23 +1,8 @@
-/**
- * 群成员 UID 绑定收集
- *
- * 「只统计本群成员」这件事靠两层保证：
- *   1. 先取本群成员列表，之后所有绑定都要过 `members.has(qq)` 这一关，
- *      非本群成员的绑定（哪怕 redis 里存着）一律丢弃；
- *   2. 同一个 UID 被多人绑定时只保留一个人（seenUid 去重），避免一人多号重复计数。
- *
- * 数据源（按优先级）：
- *   1. miao:rank:uid-info:<game>:<uid>  { qq, uidType, totalCount } —— #更新面板 / 群排行时写入
- *   2. Yz:genshin:mys:qq-uid:<qq> / genshin:id-uid:<qq> —— 框架级 qq→uid 绑定
- *   3. e.runtime.NoteUser —— Miao-Yunzai 的 NoteUser（存在才用）
- */
 const UID_RE = /^\d{9,10}$/
 const QQ_RE = /^\d{5,12}$/
 const BIND_PREFIXES = ["Yz:genshin:mys:qq-uid:", "genshin:id-uid:"]
-/** 预设面板/官方示例 uid，不参与统计 */
 const PRESET_UID_MAX = 100000006
 
-/** 取群成员 Map<qq, member>，跨适配器兜底 */
 async function getGroupMembers(e) {
   const group = e?.group
   const map = new Map()
@@ -49,7 +34,6 @@ function nickOf(m, qq) {
   return nick || String(qq)
 }
 
-/** redis.mGet 在个别实现里可能没有，退化为逐个 get */
 async function batchGet(keys) {
   if (!keys?.length) return []
   if (typeof redis?.mGet === "function") {
@@ -57,7 +41,6 @@ async function batchGet(keys) {
       const ret = await redis.mGet(keys)
       if (Array.isArray(ret) && ret.length === keys.length) return ret
     } catch (err) {
-      /* 落到逐个取 */
     }
   }
   const ret = []
@@ -71,12 +54,6 @@ async function batchGet(keys) {
   return ret
 }
 
-/**
- * 收集「本群成员 → 已绑定游戏 UID」
- * @param {object} e 事件对象
- * @param {string} game gs | sr
- * @returns {Promise<{bindings: Array<{qq:string,nick:string,uid:string,type:string}>, memberCount:number}>}
- */
 export async function getMemberBindings(e, game = "gs") {
   const memberMap = await getGroupMembers(e)
   const members = new Map()
@@ -87,7 +64,6 @@ export async function getMemberBindings(e, game = "gs") {
   }
   if (!members.size) return { bindings: [], memberCount: 0 }
 
-  /** 候选绑定：同一 qq 可能命中多个 uid，后面按权重取一个 */
   const candidates = []
   const seenUid = new Set()
   const add = (qq, uid, type = "bind", weight = 0) => {
@@ -95,14 +71,12 @@ export async function getMemberBindings(e, game = "gs") {
     uid = String(uid ?? "").trim()
     if (!QQ_RE.test(qq) || !UID_RE.test(uid)) return
     if (uid * 1 <= PRESET_UID_MAX) return
-    // 关键：非本群成员直接丢弃
     if (!members.has(qq)) return
     if (seenUid.has(uid)) return
     seenUid.add(uid)
     candidates.push({ qq, uid, type: type === "ck" ? "ck" : "bind", weight: Number(weight) || 0 })
   }
 
-  // 1. miao 写入的 uid-info（totalCount = 该账号有数据的角色数，用作主号判定）
   try {
     const keys = (await redis.keys(`miao:rank:uid-info:${game}:*`)) || []
     const vals = await batchGet(keys)
@@ -121,7 +95,6 @@ export async function getMemberBindings(e, game = "gs") {
     logger?.warn?.(`[ml-sgh-plugin] 读取 miao 绑定信息失败：${err?.message || err}`)
   }
 
-  // 2. 框架级 qq→uid 绑定
   const boundQQ = new Set(candidates.map((c) => c.qq))
   const pending = [...members.keys()].filter((qq) => !boundQQ.has(qq))
   if (pending.length) {
@@ -134,7 +107,6 @@ export async function getMemberBindings(e, game = "gs") {
     })
   }
 
-  // 3. Miao-Yunzai NoteUser（存在才用）
   try {
     const NoteUser = e?.runtime?.NoteUser
     if (NoteUser && typeof NoteUser.forEach === "function") {
@@ -148,10 +120,8 @@ export async function getMemberBindings(e, game = "gs") {
       }
     }
   } catch (err) {
-    /* NoteUser 不是必须的 */
   }
 
-  // 同一 qq 只留权重最高的那个 uid
   const byQQ = new Map()
   for (const c of candidates) {
     const cur = byQQ.get(c.qq)

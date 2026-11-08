@@ -1,19 +1,13 @@
-/**
- * 持有率统计聚合（纯函数，无 IO，便于单测）
- */
 import { toPercent } from "./format.js"
 import { elemInfo, weaponName, gameConf, levelDist, hasLevelDist, consLabelOf, elemDist } from "./game.js"
 import { comboRows, iconFallback } from "./sets.js"
 
-/** 命座 0~6 的色阶（浅 -> 深金，最浅一档也保证在米色底上可辨） */
 export const CONS_COLORS = ["#c9bda3", "#dfc389", "#d9a95b", "#cd8e3c", "#bb7226", "#a4581f", "#8b3f13"]
 
 const clampCons = (n) => Math.min(6, Math.max(0, Number(n) || 0))
 
-/** 命座/星魂的短称（「均命 / 满命」 vs 「均魂 / 满魂」） */
 export const consShortOf = (game = "gs") => (game === "sr" ? "魂" : "命")
 
-/** 命座分布与均值 */
 export function summarizeCons(owners = []) {
   const consDist = [0, 0, 0, 0, 0, 0, 0]
   let consSum = 0
@@ -37,7 +31,6 @@ export function summarizeCons(owners = []) {
   }
 }
 
-/** 把命座分布压成一条比例条 */
 export function consStrip(consDist = [], count = 0) {
   return consDist.map((n, c) => ({
     c,
@@ -47,7 +40,6 @@ export function consStrip(consDist = [], count = 0) {
   }))
 }
 
-/** 武器/套装按出现次数统计；acc(row, item) 用于累加衍生值 */
 function tally(list, getKey, makeItem, acc) {
   const map = new Map()
   for (const item of list) {
@@ -66,18 +58,12 @@ function tally(list, getKey, makeItem, acc) {
   return [...map.values()]
 }
 
-/**
- * 总览数据
- * @param {object} scan collectGroup 的返回值
- * @param {object} opts { game, star: 0|5|4, focusCons: -1|0-6, groupName, groupNoMask, credit }
- */
 export function buildOverview(scan = {}, opts = {}) {
   const game = opts.game || scan.game || "gs"
   const conf = gameConf(game)
   const total = scan.players?.length || 0
   const star = Number(opts.star) || 0
   const chars = (scan.chars || []).filter((c) => (c.owners?.length || 0) > 0)
-  // 按第几命排序（「零命」= 0，是有效值，所以用 -1 表示「不按命座排」）
   const rawFocus = Number(opts.focusCons)
   const focus = Number.isInteger(rawFocus) && rawFocus >= 0 && rawFocus <= 6 ? rawFocus : null
   const consShort = consShortOf(game)
@@ -88,7 +74,6 @@ export function buildOverview(scan = {}, opts = {}) {
   const list = picked.map((c) => {
     const sum = summarizeCons(c.owners)
     const elem = elemInfo(c.elem)
-    // 每个命座各自的「群内持有率」= 该命座人数 / 参统成员数（7 段加起来正好等于整体持有率）
     const consCells = sum.consDist.map((n, k) => ({
       c: k,
       n,
@@ -112,7 +97,6 @@ export function buildOverview(scan = {}, opts = {}) {
       avgCons: sum.avgCons,
       avgConsText: sum.avgCons.toFixed(1),
       fullCount: sum.fullCount,
-      /** 指定命座的人数 / 占比（焦点模式下卡片右上角显示的就是它） */
       focusCount: cell ? cell.n : 0,
       focusRate: cell ? cell.n / (total || 1) : 0,
       focusRateText: cell ? cell.rateText : "0%",
@@ -123,11 +107,9 @@ export function buildOverview(scan = {}, opts = {}) {
   if (focus === null) {
     list.sort((a, b) => b.star - a.star || b.rate - a.rate || b.count - a.count || a.id - b.id)
   } else {
-    // 焦点模式：严格按该命座持有率排（不能先按星级，否则四星永远垫底，看不出排名）
     list.sort((a, b) => b.focusRate - a.focusRate || b.rate - a.rate || b.star - a.star || a.id - b.id)
   }
 
-  // 副标题要分开报五星 / 四星的数量（不是只在筛选时才分）
   const fiveOwned = chars.filter((c) => Number(c.star) === 5).length
   const fourOwned = chars.filter((c) => Number(c.star) !== 5).length
 
@@ -136,12 +118,9 @@ export function buildOverview(scan = {}, opts = {}) {
     gameName: conf.name,
     title: conf.title,
     consLabel: conf.consLabel,
-    /** 命座/星魂的短称，用于卡片上的「均命 / 满命」小标签 */
     consShort,
-    /** 焦点命座：-1 表示不按命座排序 */
     hasFocus: focus !== null,
     focus: focus === null ? -1 : focus,
-    /** 「二命 / 满命」，用于标题徽章与卡片右上角 */
     focusLabel: focus === null ? "" : `${consLabelOf(focus)}${consShort}`,
     scope: star === 5 ? "5" : star === 4 ? "4" : "all",
     scopeLabel: star === 5 ? "五星角色" : star === 4 ? "四星角色" : "全部角色",
@@ -157,11 +136,6 @@ export function buildOverview(scan = {}, opts = {}) {
   }
 }
 
-/**
- * 单角色详情
- * @param {object} scan collectChar 的返回值
- * @param {object} meta { game, name, title, desc, star, elem, elemName, isTraveler, weapon, face, banner, birthday, cncv, cons, astro }
- */
 export function buildDetail(scan = {}, meta = {}) {
   const game = meta.game || scan.game || "gs"
   const conf = gameConf(game)
@@ -169,10 +143,8 @@ export function buildDetail(scan = {}, meta = {}) {
   const stat = (scan.chars || []).find((c) => c.name === meta.name) || { owners: [] }
   const owners = stat.owners || []
   const sum = summarizeCons(owners)
-  /** 旅行者：面板里按元素分成七种形态，单独给一块「七元素分布」 */
   const isTraveler = !!(meta.isTraveler ?? stat.isTraveler)
 
-  // 武器穿戴统计
   const weapons = tally(
     owners.map((o) => o.weapon),
     (w) => w.name,
@@ -190,8 +162,6 @@ export function buildDetail(scan = {}, meta = {}) {
     }))
     .sort((a, b) => b.count - a.count || b.star - a.star || a.name.localeCompare(b.name))
 
-  // 套装统计：原神按组合标签（4件套写「绝缘4」，2+2 按两件套效果归成「2攻+2攻」）；
-  //           星铁分成外圈（4件隧洞遗器）/ 内圈（2件位面饰品）两个榜
   const setBuckets = { all: [], outer: [], inner: [] }
   for (const o of owners) {
     for (const row of comboRows(game, o.setList)) {
@@ -214,7 +184,6 @@ export function buildDetail(scan = {}, meta = {}) {
       }))
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
 
-  // 命座/星魂信息（名称 + 效果，取 miao 的角色 meta）
   const consInfo = Object.entries(meta.cons || {})
     .map(([k, v]) => ({
       c: Number(k),
@@ -227,7 +196,6 @@ export function buildDetail(scan = {}, meta = {}) {
     .filter((x) => x.c >= 1 && x.c <= 6 && (x.name || x.desc))
     .sort((a, b) => a.c - b.c)
 
-  // 命座信息与分布融合：C0~C6 每行 = 分布 + 名称 + 效果（C0 用角色名）
   const consInfoMap = Object.fromEntries(consInfo.map((x) => [x.c, x]))
   const consMerged = consStrip(sum.consDist, sum.count).map((row) => {
     const info = consInfoMap[row.c]
@@ -243,7 +211,6 @@ export function buildDetail(scan = {}, meta = {}) {
   })
 
   const elem = elemInfo(meta.elem || stat.elem || "")
-  // 七元素分布：只统计持有者各自当前的共鸣形态（占持有者，不是占全群）
   const elems = isTraveler
     ? elemDist(owners, game).map((e) => ({
         ...e,
@@ -257,11 +224,9 @@ export function buildDetail(scan = {}, meta = {}) {
     gameName: conf.name,
     title: conf.title,
     consLabel: conf.consLabel,
-    /** 命座/星魂的短称（「满命 / 满魂」） */
     consShort: consShortOf(game),
     weaponLabel: conf.weaponLabel,
     relicLabel: conf.relicLabel,
-    // 注意：键名不能叫 char —— art-template 编译模板时 char 会撞名（RuntimeError: char is not defined）
     hero: {
       name: meta.name,
       title: meta.title || "",
@@ -296,23 +261,18 @@ export function buildDetail(scan = {}, meta = {}) {
       profileCount: sum.profileCount
     },
     isSr: game === "sr",
-    /** 旅行者：详情页多一块「七元素分布」，命座取指定形态（默认冰） */
     isTraveler,
     elems,
     elemTotal: sum.count,
-    /** 等级分布：只有原神有（星铁满级固定 80，分档没意义） */
     hasLevels: hasLevelDist(game),
     levels: levelDist(owners, game).map((l) => ({
       ...l,
       rate: sum.count ? l.count / sum.count : 0,
       rateText: toPercent(sum.count ? l.count / sum.count : 0)
     })),
-    /** 命座信息与分布融合（C0~C6 每行 = 分布 + 名称 + 效果） */
     consMerged,
     weapons: weapons.slice(0, 5),
-    /** 原神：单榜（4件套 / 2+2 归并后的标签） */
     sets: setBoard(setBuckets.all).slice(0, 5),
-    /** 星铁：外圈隧洞遗器 / 内圈位面饰品，分开统计 */
     setsOuter: setBoard(setBuckets.outer).slice(0, 3),
     setsInner: setBoard(setBuckets.inner).slice(0, 3)
   }
