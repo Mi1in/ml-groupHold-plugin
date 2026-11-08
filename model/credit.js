@@ -1,6 +1,5 @@
 import fs from "node:fs"
 import { PLUGIN_NAME } from "./miao.js"
-import { timeText } from "./format.js"
 
 export const AUTHOR = "Mi1in"
 
@@ -19,7 +18,6 @@ export function credit() {
   return {
     name: PLUGIN_NAME,
     version: PLUGIN_VERSION,
-    author: AUTHOR,
-    time: timeText(new Date())
+    author: AUTHOR
   }
 }

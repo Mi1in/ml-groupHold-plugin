@@ -23,9 +23,3 @@ export function maskId(id = "") {
   return `${s.slice(0, 3)}***${s.slice(-3)}`
 }
 
-export function timeText(date = new Date()) {
-  const d = date instanceof Date ? date : new Date(date)
-  if (!(d instanceof Date) || Number.isNaN(d.getTime())) return ""
-  const p = (n) => String(n).padStart(2, "0")
-  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`
-}

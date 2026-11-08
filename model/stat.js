@@ -126,7 +126,7 @@ export function buildOverview(scan = {}, opts = {}) {
     scopeLabel: star === 5 ? "五星角色" : star === 4 ? "四星角色" : "全部角色",
     groupName: opts.groupName || "",
     groupNoMask: opts.groupNoMask || "",
-    credit: opts.credit || { name: "ml-groupHold-plugin", version: "", time: "" },
+    credit: opts.credit || { name: "ml-groupHold-plugin", version: "" },
     total,
     allOwned,
     ownedCount: picked.length,
@@ -249,7 +249,7 @@ export function buildDetail(scan = {}, meta = {}) {
     },
     groupName: meta.groupName || "",
     groupNoMask: meta.groupNoMask || "",
-    credit: meta.credit || { name: "ml-groupHold-plugin", version: "", time: "" },
+    credit: meta.credit || { name: "ml-groupHold-plugin", version: "" },
     stat: {
       total,
       count: sum.count,
