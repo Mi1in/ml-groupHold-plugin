@@ -1,0 +1,337 @@
+/* 角色持有率 · 总览 */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  width: 860px;
+  /* 高清输出：CSS zoom 让整页按 1.5 倍栅格化（860 -> 1290px），小字号更清晰 */
+  zoom: 1.5;
+  background: #efe9dd;
+  font-family: "mlhei", "Microsoft YaHei", "PingFang SC", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.num { font-family: "mlnum", "mlhei", sans-serif; }
+
+.container {
+  width: 860px;
+  background: #fffdf9;
+  padding-bottom: 18px;
+}
+
+/* ---------- 头部 ---------- */
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 24px 28px 14px;
+  background:
+    radial-gradient(520px 140px at 8% 0%, rgba(214, 178, 110, .30), rgba(214, 178, 110, 0) 70%),
+    linear-gradient(180deg, #fdf9f1, #fffdf9);
+  border-bottom: 1px solid #f0e8d9;
+}
+
+.title {
+  font-size: 29px;
+  font-weight: bold;
+  color: #3a3229;
+  letter-spacing: 3px;
+  line-height: 1.2;
+  position: relative;
+  padding-left: 14px;
+}
+.title::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 6px; bottom: 6px;
+  width: 4px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #e3c07a, #b9862f);
+}
+
+.sub {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding-left: 14px;
+  font-size: 12.5px;
+  color: #918878;
+}
+.sub .dot { width: 3px; height: 3px; border-radius: 50%; background: #cfc4ad; display: inline-block; }
+/* 排序依据徽章（按二命持有率排序） */
+.sub .ftag {
+  font-size: 10.5px;
+  color: #fff;
+  background: linear-gradient(135deg, #cf9a3c, #a9691a);
+  border-radius: 4px;
+  padding: 1px 7px;
+  line-height: 1.55;
+  letter-spacing: .3px;
+}
+/* 游戏标签（原神 / 星穹铁道） */
+.sub .gtag {
+  font-size: 11px;
+  color: #a9711f;
+  background: #f8f1e0;
+  border: 1px solid #ecddbd;
+  border-radius: 4px;
+  padding: 0 6px;
+  line-height: 1.65;
+  letter-spacing: .3px;
+}
+
+.head-right { display: flex; flex-direction: column; align-items: flex-end; gap: 9px; }
+
+/* 群名片 */
+.gcard {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 420px;
+  padding: 4px 12px 4px 5px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #fdf6e6, #f7efdd);
+  border: 1px solid #ecddbd;
+  box-shadow: 0 2px 6px rgba(185, 134, 47, .08);
+  font-size: 11.5px;
+  color: #7a6a4d;
+}
+.gmark {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  border-radius: 6px;
+  font-size: 10px;
+  color: #fff;
+  background: linear-gradient(135deg, #dcb266, #b9862f);
+}
+.gname {
+  max-width: 210px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #6d5c3c;
+  letter-spacing: .3px;
+}
+.gdot { width: 3px; height: 3px; border-radius: 50%; background: #d5c6a8; display: inline-block; }
+.gid { color: #a4967d; white-space: nowrap; }
+
+.chips { display: flex; gap: 6px; }
+.chip {
+  font-size: 12px;
+  color: #9b907c;
+  border: 1px solid #e6ddca;
+  border-radius: 20px;
+  padding: 4px 12px;
+  background: #fffdfa;
+}
+.chip.on {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(135deg, #d5a648, #b9862f);
+  box-shadow: 0 3px 8px rgba(185, 134, 47, .28);
+}
+/* 排序命座标签：与范围标签区分，用描边金而不是实心 */
+.chip.focus {
+  font-family: "mlnum", "mlhei", sans-serif;
+  color: #a9711f;
+  border-color: #e2c48c;
+  background: #fdf5e6;
+  padding: 4px 9px;
+}
+
+/* ---------- 说明 ---------- */
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 13px 30px 10px;
+  font-size: 10.5px;
+  color: #a89a80;
+}
+.legend .lg {
+  font-family: "mlnum", sans-serif;
+  color: #8a7a5c;
+  background: #f5eee0;
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+/* 右侧：数据范围提示 */
+.legend .scope-tip {
+  margin-left: auto;
+  font-size: 10px;
+  color: #7d9a63;
+  background: #f1f6ec;
+  border: 1px solid #e0ead4;
+  border-radius: 4px;
+  padding: 1px 7px;
+  white-space: nowrap;
+}
+
+/* ---------- 角色列表 ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  padding: 0 26px;
+}
+
+.row {
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: #fbf8f2;
+  border: 1px solid #efe7d8;
+}
+
+.top { display: flex; align-items: center; gap: 8px; }
+
+.face {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #e8e0d1;
+  background-size: cover;
+  background-position: center 18%;
+  border: 2px solid #e2d3b4;
+}
+.face.s5 { border-color: #d9ab4f; }
+.face.s4 { border-color: #a98cc4; }
+
+.names { flex: 1; min-width: 0; }
+.l1 { display: flex; align-items: center; gap: 5px; height: 17px; }
+.name {
+  font-size: 13.5px;
+  color: #3d362d;
+  font-weight: bold;
+  letter-spacing: .4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.elem {
+  flex: 0 0 auto;
+  font-size: 9px;
+  color: #fff;
+  padding: 1px 4px;
+  border-radius: 3px;
+  line-height: 1.4;
+}
+.elem-anemo { background: #74c2a8; }
+.elem-geo { background: #d3a15a; }
+.elem-electro { background: #9d7fd0; }
+.elem-dendro { background: #8cb63f; }
+.elem-hydro { background: #4cb8e8; }
+.elem-pyro { background: #e8734b; }
+.elem-cryo { background: #79c6dc; }
+.elem-phys { background: #a9a49b; }
+.elem-quantum { background: #6f6bd0; }
+.elem-imaginary { background: #e0c451; }
+.elem-multi { background: #9b9b9b; }
+
+.stars { flex: 0 0 auto; font-size: 8px; letter-spacing: .5px; }
+.stars.s5 { color: #d9a13c; }
+.stars.s4 { color: #9b7ec0; }
+
+.l2 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  font-size: 10px;
+  color: #a1967f;
+}
+.l2 b { font-size: 11px; color: #8a7a5c; margin-left: 1px; }
+.l2 em {
+  font-style: normal;
+  color: #b4762a;
+  background: #f7ecd8;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+
+.right { text-align: right; min-width: 60px; }
+.rate { font-size: 16.5px; color: #a9711f; line-height: 1.1; }
+.cnt { font-size: 9.5px; color: #a1967f; margin-top: 1px; }
+/* 焦点命座标签（二命 / 二魂），贴在右上角数字上方 */
+.rtag {
+  display: inline-block;
+  font-size: 8.5px;
+  color: #a9711f;
+  background: #f7ecd8;
+  border-radius: 3px;
+  padding: 0 4px;
+  margin-bottom: 1px;
+  letter-spacing: .3px;
+}
+
+/* 命座小格 C0~C6 */
+.cons7 { display: flex; gap: 3px; margin-top: 6px; }
+.c7 {
+  position: relative;
+  flex: 1;
+  height: 26px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+  background: #f6f0e4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.c7 .ck { font-size: 7.5px; color: #b3a68e; line-height: 1; }
+.c7 .cv { font-size: 9.5px; color: #6f6455; line-height: 1.2; }
+.c7 .cbar7 {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  bottom: 2.5px;
+  height: 3px;
+  border-radius: 2px;
+  background: #e6dcc7;
+  overflow: hidden;
+}
+.c7.zero .cbar7 { display: none; }
+.c7 .cbar7 i { display: block; height: 100%; border-radius: 2px; }
+.c7.zero { background: #f9f5ec; }
+.c7.zero .cv { color: #c8beab; }
+/* 当前排序依据的那一格：加金边，扫一眼就知道在排什么 */
+.c7.on {
+  background: #fdf3df;
+  box-shadow: inset 0 0 0 1px #d9b26a;
+}
+.c7.on .ck { color: #a9711f; }
+.c7.on .cv { color: #8a5a13; font-weight: bold; }
+
+.empty {
+  margin: 10px 26px 20px;
+  padding: 26px;
+  text-align: center;
+  font-size: 13px;
+  color: #a1967f;
+  border: 1px dashed #e6dcc8;
+  border-radius: 12px;
+}
+
+/* ---------- 署名 ---------- */
+.copyright { margin: 16px 26px 0; padding-top: 11px; border-top: 1px solid #f1e9da; }
+.cp-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 10.5px;
+  color: #a89a80;
+  letter-spacing: .3px;
+}
+.cp-line b { color: #8a6f3d; }
+.cp-line em { font-style: normal; font-family: "mlnum", sans-serif; color: #b9862f; }
+.cp-mark {
+  width: 5px;
+  height: 5px;
+  border-radius: 1.5px;
+  background: linear-gradient(135deg, #e3c07a, #b9862f);
+}
+.cp-sep { width: 1px; height: 9px; background: #e4dac6; }

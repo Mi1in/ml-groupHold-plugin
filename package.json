@@ -1,0 +1,10 @@
+{
+  "name": "ml-sgh-plugin",
+  "version": "1.0.0",
+  "description": "群成员角色持有率统计（武器/圣遗物/命座）",
+  "type": "module",
+  "main": "index.js",
+  "author": "Mi1in",
+  "license": "MIT",
+  "dependencies": {}
+}

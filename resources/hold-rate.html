@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="{{selfRes}}hold-rate.css">
+  <style>
+    @font-face { font-family: "mlnum"; src: url("{{miaoRes}}common/font/tttgbnumber.woff") format("woff"); }
+    @font-face { font-family: "mlhei"; src: url("{{miaoRes}}common/font/HYWH-65W.woff") format("woff"); }
+  </style>
+</head>
+<body>
+<div class="container" id="container">
+  <div class="head">
+    <div class="head-left">
+      <div class="title">{{title}}</div>
+      <div class="sub">
+        <span class="gtag">{{gameName}}</span><i class="dot"></i>
+        <span>{{total}} 位成员参与统计</span><i class="dot"></i>
+        {{if scope === 'all'}}
+        <span>五星 {{fiveOwned}} 个</span><i class="dot"></i>
+        <span>四星 {{fourOwned}} 个</span>
+        {{else}}
+        <span>{{scopeLabel}} {{ownedCount}} 个</span>
+        {{/if}}
+        {{if hasFocus}}<span class="ftag">按{{focusLabel}}持有率排序</span>{{/if}}
+      </div>
+    </div>
+    <div class="head-right">
+      <div class="gcard">
+        <span class="gmark">群</span>
+        {{if groupName}}<b class="gname">{{groupName}}</b><i class="gdot"></i>{{/if}}
+        <span class="gid">{{groupNoMask}}</span>
+      </div>
+      <div class="chips">
+        <span class="chip {{if scope === 'all'}}on{{/if}}">全部</span>
+        <span class="chip {{if scope === '5'}}on{{/if}}">五星</span>
+        <span class="chip {{if scope === '4'}}on{{/if}}">四星</span>
+        {{if hasFocus}}<span class="chip focus">C{{focus}}</span>{{/if}}
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span class="lg">C0–C6</span>
+    <span>为该{{consLabel}}在群内的持有率（占 {{total}} 位参统成员，7 格之和即该角色总持有率）</span>
+    <span class="scope-tip">{{if hasFocus}}按{{focusLabel}}持有率由高到低 · {{/if}}仅统计本群成员</span>
+  </div>
+
+  {{if list.length === 0}}
+  <div class="empty">还没有任何{{scopeLabel}}的持有记录~</div>
+  {{/if}}
+
+  <div class="grid">
+    {{each list item}}
+    <div class="row">
+      <div class="top">
+        <div class="face {{if item.star >= 5}}s5{{else}}s4{{/if}}" style="background-image:url('{{@miaoRes}}{{@item.face}}')"></div>
+        <div class="names">
+          <div class="l1">
+            <span class="name">{{item.name}}</span>
+            <span class="elem elem-{{item.elem}}">{{item.elemName}}</span>
+            <span class="stars {{if item.star >= 5}}s5{{else}}s4{{/if}}">{{item.stars}}</span>
+          </div>
+          <div class="l2">
+            <span>均{{consShort}} <b class="num">{{item.avgConsText}}</b></span>
+            {{if item.fullCount > 0}}<em>满{{consShort}} {{item.fullCount}}</em>{{/if}}
+          </div>
+        </div>
+        <div class="right">
+          {{if hasFocus}}
+          <div class="rtag">{{focusLabel}}</div>
+          <div class="rate num">{{item.focusRateText}}</div>
+          <div class="cnt">{{item.focusCount}} 人</div>
+          {{else}}
+          <div class="rate num">{{item.rateText}}</div>
+          <div class="cnt">{{item.count}} 人</div>
+          {{/if}}
+        </div>
+      </div>
+      <div class="cons7">
+        {{each item.consCells cell}}
+        <div class="c7{{if cell.zero}} zero{{/if}}{{if hasFocus && cell.c === focus}} on{{/if}}">
+          <span class="ck num">C{{cell.c}}</span>
+          <b class="cv num">{{cell.rateText}}</b>
+          <span class="cbar7"><i style="width:{{cell.w}}%;background:{{cell.color}}"></i></span>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+    {{/each}}
+  </div>
+
+  <div class="copyright">
+    <div class="cp-line">
+      <i class="cp-mark"></i>
+      <span>本图由 <b>{{@credit.name}}</b> <em>v{{credit.version}}</em> 生成 Design by <b>{{credit.author}}</b></span>
+      <i class="cp-sep"></i>
+      <span>角色数据来自 miao-plugin</span>
+      <i class="cp-sep"></i>
+      <span class="num">{{credit.time}}</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

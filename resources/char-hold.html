@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <title>{{hero.name}} · {{title}}</title>
+  <link rel="stylesheet" href="{{selfRes}}char-hold.css">
+  <style>
+    @font-face { font-family: "mlnum"; src: url("{{miaoRes}}common/font/tttgbnumber.woff") format("woff"); }
+    @font-face { font-family: "mlhei"; src: url("{{miaoRes}}common/font/HYWH-65W.woff") format("woff"); }
+  </style>
+</head>
+<body>
+<div class="container" id="container">
+
+  <!-- 头图 -->
+  <div class="hero hero-{{game}}">
+    <div class="hero-bg">
+      {{if hero.banner}}<img class="hero-art" src="{{@miaoRes}}{{@hero.banner}}" style="width:{{hero.artZoom * 100}}%;transform:translate(-50%,-{{hero.artAnchor}}%)" alt="">{{/if}}
+    </div>
+    <div class="hero-mask"></div>
+    <div class="hero-group">
+      <span class="gmark">群</span>
+      {{if groupName}}<b>{{groupName}}</b><i class="gdot"></i>{{/if}}
+      <span>{{groupNoMask}}</span>
+    </div>
+    <div class="hero-inner">
+      <div class="face" style="background-image:url('{{@miaoRes}}{{@hero.face}}')"></div>
+      <div class="info">
+        <div class="l1">
+          <span class="name">{{hero.name}}</span>
+          {{if hero.elemIcon}}
+          <img class="ico" src="{{@hero.elemIcon}}" title="{{hero.elemName}}" alt="{{hero.elemName}}">
+          {{else}}
+          <span class="txt-tag">{{hero.elemName}}</span>
+          {{/if}}
+          {{if hero.typeIcon}}
+          <img class="ico" src="{{@hero.typeIcon}}" title="{{hero.weaponName}}" alt="{{hero.weaponName}}">
+          {{else}}
+          {{if hero.weaponName}}<span class="txt-tag dim">{{hero.weaponName}}</span>{{/if}}
+          {{/if}}
+          <span class="stars">{{hero.stars}}</span>
+        </div>
+        <div class="meta">
+          <span class="gtag">{{gameName}}</span>
+          {{if hero.title}}<i class="dot"></i><span class="mi">{{hero.title}}</span>{{/if}}
+          {{if hero.birthday}}<i class="dot"></i><span class="mi">生日 {{hero.birthday}}</span>{{/if}}
+          {{if hero.cncv}}<i class="dot"></i><span class="mi">CV {{hero.cncv}}</span>{{/if}}
+        </div>
+      </div>
+      <div class="hero-stat">
+        <div class="big num">{{stat.rateText}}</div>
+        <div class="cap">持有率</div>
+        <div class="small">{{stat.count}} / {{stat.total}} 人持有</div>
+      </div>
+      {{if hero.desc}}<div class="desc">{{hero.desc}}</div>{{/if}}
+    </div>
+  </div>
+
+  <!-- 一、等级分布：只有原神有，放在最上面（星铁满级固定 80，不做统计） -->
+  {{if hasLevels}}
+  <div class="panels level">
+    <div class="panel">
+      <div class="panel-title">角色等级分布<span class="pt-sub">占持有者</span></div>
+      <div class="lv-list">
+        {{each levels l}}
+        <div class="lv-col">
+          <div class="lv-name"><i class="lv-dot" style="background:{{l.color}}"></i>{{l.label}}</div>
+          <div class="lv-bar"><i style="width:{{l.rate * 100}}%;background:{{l.color}}"></i></div>
+          <div class="lv-val num">{{l.count}}<em>人</em><span>{{l.rateText}}</span></div>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+  {{/if}}
+
+  <!-- 七元素分布：只有旅行者有（空 / 荧 可共鸣七种元素） -->
+  {{if isTraveler}}
+  <div class="panels level{{if hasLevels}} tight{{/if}}">
+    <div class="panel">
+      <div class="panel-title">七元素分布<span class="pt-sub">占持有者的当前共鸣形态</span></div>
+      {{if !elemTotal}}
+      <div class="panel-empty">暂无旅行者数据</div>
+      {{else}}
+      <div class="elem-stack">
+        {{each elems e}}{{if e.count}}<i style="width:{{e.rate * 100}}%;background:{{e.color}}"></i>{{/if}}{{/each}}
+      </div>
+      <div class="elem-grid">
+        {{each elems e}}
+        <div class="eg-cell{{if !e.count}} zero{{/if}}">
+          <div class="eg-name"><i class="eg-dot" style="background:{{e.color}}"></i>{{e.name}}主</div>
+          <div class="eg-val num">{{e.count}}<em>人</em><span>{{e.rateText}}</span></div>
+        </div>
+        {{/each}}
+      </div>
+      {{/if}}
+    </div>
+  </div>
+  {{/if}}
+
+  <!-- 二、命座信息及分布 -->
+  <div class="panels{{if hasLevels || isTraveler}} second{{/if}}">
+    <div class="panel">
+      <div class="panel-title">
+        {{consLabel}}信息及分布{{if hero.astro}}<span class="pt-sub">{{hero.astro}}</span>{{/if}}
+        <span class="pt-side">
+          <span class="pt-avg">平均{{consLabel}} <b class="num">{{stat.avgConsText}}</b></span>
+          <span class="pt-avg">满{{consShort}} <b class="num">{{stat.fullCount}}</b><em class="num">{{stat.fullRateText}}</em></span>
+        </span>
+      </div>
+      {{if consMerged.length === 0}}
+      <div class="panel-empty">暂无{{consLabel}}数据</div>
+      {{/if}}
+      <div class="cm-list cm-{{game}}">
+        {{each consMerged c}}
+        <div class="cm-row">
+          <div class="cm-head">
+            <span class="cm-label">
+              <span class="cnum {{if c.c === 6}}full{{/if}}">C{{c.c}}</span>
+              <span class="cm-name" title="{{c.name}}">{{c.name}}</span>
+            </span>
+            <div class="cbar"><i style="width:{{c.w}}%;background:{{c.color}}"></i></div>
+            <span class="cval num">{{if c.n}}{{c.n}}<em>{{c.rateText}}</em>{{else}}<em class="dim">—</em>{{/if}}</span>
+          </div>
+          {{if c.desc}}<div class="cm-desc">{{c.desc}}</div>{{/if}}
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+
+  <!-- 三、武器 / 圣遗物 -->
+  <div class="panels second">
+    <div class="panel">
+      <div class="panel-title">{{weaponLabel}}穿戴{{if weapons.length}} TOP{{weapons.length}}{{/if}}</div>
+      {{if weapons.length === 0}}
+      <div class="panel-empty">暂无{{weaponLabel}}数据</div>
+      {{/if}}
+      <div class="w-list">
+        {{each weapons w}}
+        <div class="w-row">
+          <div class="w-icon {{if w.star >= 5}}s5{{else}}s4{{/if}}" style="background-image:url('{{@miaoRes}}{{@w.img}}')"></div>
+          <div class="w-main">
+            <div class="w-name">{{w.name}}<em>{{w.affixText}}</em></div>
+            <div class="w-bar"><i style="width:{{w.rate * 100}}%"></i></div>
+          </div>
+          <div class="w-cnt num">{{w.rateText}}</div>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+
+    {{if isSr}}
+    <div class="panel">
+      <div class="panel-title">{{relicLabel}}套装</div>
+      {{if setsOuter.length === 0 && setsInner.length === 0}}
+      <div class="panel-empty">暂无{{relicLabel}}数据</div>
+      {{/if}}
+      {{if setsOuter.length}}
+      <div class="set-group">外圈 · 隧洞遗器</div>
+      <div class="w-list">
+        {{each setsOuter s}}
+        <div class="w-row">
+          <div class="w-icon set" style="background-image:url('{{@miaoRes}}{{@s.img}}')"></div>
+          <div class="w-main">
+            <div class="w-name">{{s.name}}</div>
+            <div class="w-bar"><i style="width:{{s.rate * 100}}%"></i></div>
+          </div>
+          <div class="w-cnt num">{{s.rateText}}</div>
+        </div>
+        {{/each}}
+      </div>
+      {{/if}}
+      {{if setsInner.length}}
+      <div class="set-group">内圈 · 位面饰品</div>
+      <div class="w-list">
+        {{each setsInner s}}
+        <div class="w-row">
+          <div class="w-icon set" style="background-image:url('{{@miaoRes}}{{@s.img}}')"></div>
+          <div class="w-main">
+            <div class="w-name">{{s.name}}</div>
+            <div class="w-bar"><i style="width:{{s.rate * 100}}%"></i></div>
+          </div>
+          <div class="w-cnt num">{{s.rateText}}</div>
+        </div>
+        {{/each}}
+      </div>
+      {{/if}}
+    </div>
+    {{else}}
+    <div class="panel">
+      <div class="panel-title">{{relicLabel}}套装{{if sets.length}} TOP{{sets.length}}{{/if}}</div>
+      {{if sets.length === 0}}
+      <div class="panel-empty">暂无{{relicLabel}}数据</div>
+      {{/if}}
+      <div class="w-list">
+        {{each sets s}}
+        <div class="w-row">
+          <div class="w-icon set" style="background-image:url('{{@miaoRes}}{{@s.img}}')"></div>
+          <div class="w-main">
+            <div class="w-name">{{s.name}}</div>
+            <div class="w-bar"><i style="width:{{s.rate * 100}}%"></i></div>
+          </div>
+          <div class="w-cnt num">{{s.rateText}}</div>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+    {{/if}}
+  </div>
+
+  <div class="copyright">
+    <div class="cp-line">
+      <i class="cp-mark"></i>
+      <span>本图由 <b>{{@credit.name}}</b> <em>v{{credit.version}}</em> 生成 Design by <b>{{credit.author}}</b></span>
+      <i class="cp-sep"></i>
+      <span>角色数据来自 miao-plugin</span>
+      <i class="cp-sep"></i>
+      <span class="num">{{credit.time}}</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
